@@ -7,7 +7,7 @@ Ansible Playbooks for UKCA training based on the Met Office Virtual Machine
 
 This playbook is used to provision a VM on the Jasmin scientific computing cloud.
 The playbook deploys a machine and installs x2go server on the VM allowing the user to use applications requiring x windows.
-`x2goclient <http://wiki.x2go.org/doku.php/download:start>`_ will need to be installed on the local machine.
+[x2goclient](http://wiki.x2go.org/doku.php/download:start) will need to be installed on the local machine.
 
 Preparing the playbook
 ----------------------
@@ -15,7 +15,7 @@ Preparing the playbook
 **_template files**
 ==================
 
-There are two files which have the postfix _template*. Just copy these files into their current location removing _template.
+There are two files which have the postfix _template*. Just copy these files into their current location removing `_template`.
 
 1. metomi-playbook/inventory_template.ini
 2. metomi-playbook/group_vars/all_template.yml
