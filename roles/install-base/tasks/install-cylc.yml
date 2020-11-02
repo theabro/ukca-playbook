@@ -9,6 +9,7 @@
     pkg:
     - python-pygraphviz
     - python-gtk2
+    - python-gobject-2
 
 - name: Install dependencies 3/3
   apt:

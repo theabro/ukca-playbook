@@ -19,6 +19,7 @@
     - install-base
     - install-desktop
     - install-mosrs
+    - install-um-extras
     #- remove-root-access
 
 
