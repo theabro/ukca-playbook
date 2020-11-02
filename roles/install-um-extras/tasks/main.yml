@@ -28,32 +28,13 @@
     src: mule
     dest: /usr/lib/python2.7/dist-packages/mule.pth
 
-- name: make UMDIR/bin
-  file:
-    path: /home/{{ username }}/umdir/bin
-    state: directory
-
-- name: Download & install Xconv to UMDIR/bin
-  unarchive:
-    src: http://cms.ncas.ac.uk/documents/xconv/_downloads/xconv1.94_linux_x86_64.tar.gz
-    dest: /home/{{ username }}/umdir/bin
-    remote_src: yes
-
-- name: link xconv1.94 to xconv
-  file:
-    src: /home/{{ username }}/umdir/bin/xconv1.94
-    dest: /home/{{ username }}/umdir/bin/xconv
-    state: link
-    force: yes
-
-- name: link xconv1.94 to convsh
-  file:
-    src: /home/{{ username }}/umdir/bin/xconv1.94
-    dest: /home/{{ username }}/umdir/bin/convsh
-    state: link
-    force: yes
-
 - name: Update .profile with UMDIR/bin in PATH
   blockinfile:
-    block: "{{ lookup('file', 'bashrc_umdir') }}"
+    block: "{{ lookup('file', 'profile_umdir') }}"
     path: /home/{{ username }}/.profile
+
+- name: Update .bashrc with UMDIR
+  blockinfile:
+    block: "{{ lookup('file', 'bashrc_umdir') }}"
+    path: /home/{{ username }}/.bashrc
+

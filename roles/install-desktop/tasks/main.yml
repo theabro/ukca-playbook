@@ -25,18 +25,25 @@
 
 # Install X11 to allow -X connections
 - block:
-    - name: Install Xauthority & Xorg
+    - name: Install Xorg
       apt:
         pkg:
-          - xauth
           - xorg
           - openbox
+          - xauth
 
     - name: Enabling X11 Forwarding  
       lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: '^X11Forwarding'
         line: 'X11Forwarding yes'
+      notify: Restart ssh
+
+    - name: Disable X11 localhost  
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^X11UseLocalhost'
+        line: 'X11UseLocalhost no'
       notify: Restart ssh
 
 - name: Remove extra packages

@@ -18,9 +18,9 @@
     - configure-os
     - install-base
     - install-desktop
-    - install-mosrs
     - install-um-extras
-    #- remove-root-access
+    - install-mosrs
+    - remove-root-access
 
 
   handlers:

@@ -1,0 +1,4 @@
+# Include UMDIR/bin in PATH
+if [ -d "$HOME/umdir/bin" ] ; then
+    PATH="$HOME/umdir/bin:$PATH"
+fi

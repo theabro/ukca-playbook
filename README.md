@@ -126,3 +126,19 @@ Limitations
 2. Due to limitations in the UM installation script only the user `vagrant` will work.
 3. Need to use an x-windows client eg. x2go in order to operate the desktop environment.
 
+** UKCA Tutorials at vn10.9 **
+
+The UKCA Tutorials at vn10.9 need some specific settings, particularly setting `grib_library: libgrib-api-dev` in `group_vars/all.yml`. The current roles will perform the equivalent to `sudo install-um-extras`, but following that you will need to run the following commands in sequence:
+
+    um-setup -g fcm:gcom.x_tr@vn6.4 -s fcm:shumlib.x_tr@um10.9
+    install-um-data
+    install-ukca-data
+    install-rose-meta
+    fcm checkout fcm:um.x_tr@vn10.9 UM10.9
+    cd UM10.9
+    rose stem --group=install -S CENTRAL_INSTALL=true -S UKCA=true
+    rose stem --group=kgo,ukca -S GENERATE_KGO=true
+    rose stem --group=fcm_make --name=vn10.9_prebuilds -S MAKE_PREBUILDS=true
+    rose stem --group=install_source
+    rose stem -O offline --group=fcm_make --name=vn10.9_offline_prebuilds -S MAKE_PREBUILDS=true
+
