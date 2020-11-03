@@ -38,3 +38,31 @@
     block: "{{ lookup('file', 'bashrc_umdir') }}"
     path: /home/{{ username }}/.bashrc
 
+
+# Install Iris from miniconda
+- block: Install Iris via conda
+    - name: Download Miniconda
+      get_url:
+        url: https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+        dest: /home/{{ username }}/Downloads
+	mode: 0755
+
+    - name: Run miniconda script
+      shell: Miniconda3-latest-Linux-x86_64.sh -b
+      become: yes
+      become_user: "{{ username }}"
+      args:
+         executable: /bin/bash
+         chdir: /home/{{ username }}/Downloads
+
+    - name: Install via conda
+      shell: PATH=~/miniconda3/bin:$PATH conda install -y -c conda-forge iris ipython
+      become: yes
+      become_user: "{{ username }}"
+      args:
+         executable: /bin/bash
+
+    - name: Update .bashrc with python specifics
+      blockinfile:
+        block: "{{ lookup('file', 'bashrc_python') }}"
+        path: /home/{{ username }}/.bashrc

@@ -152,7 +152,7 @@ The UKCA Tutorials at vn11.7 need some specific settings, particularly setting `
     install-rose-meta
     cd src
     fcm checkout fcm:um.x_tr@vn11.7 UM11.7
-    cd UM10.9
+    cd UM11.7
     rose stem --group=install -S CENTRAL_INSTALL=true -S UKCA=true
     rose stem --group=kgo,ukca -S GENERATE_KGO=true
     rose stem --group=fcm_make --name=vn11.7_prebuilds -S MAKE_PREBUILDS=true
