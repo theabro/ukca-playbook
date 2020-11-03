@@ -59,12 +59,43 @@
   file:
     path: /work/cylc-run
     state: directory
-    owner: "{{ username }}"
+    owner: root
+    mode: 0755
 
 - name: symlink cylc-run
   file:
     src: /work/cylc-run
     dest: /home/{{ username }}/cylc-run
+    state: link
+    force: yes
+    owner: "{{ username }}"
+
+- name: Make /work/src folder
+  file:
+    path: /work/src
+    state: directory
+    owner: root
+    mode: 0755
+
+- name: symlink src
+  file:
+    src: /work/src
+    dest: /home/{{ username }}/src
+    state: link
+    force: yes
+    owner: "{{ username }}"
+
+- name: Make /work/doc folder
+  file:
+    path: /work/doc
+    state: directory
+    owner: root
+    mode: 0755
+
+- name: symlink doc
+  file:
+    src: /work/doc
+    dest: /home/{{ username }}/doc
     state: link
     force: yes
     owner: "{{ username }}"

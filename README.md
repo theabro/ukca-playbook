@@ -142,3 +142,20 @@ The UKCA Tutorials at vn10.9 need some specific settings, particularly setting `
     rose stem --group=install_source
     rose stem -O offline --group=fcm_make --name=vn10.9_offline_prebuilds -S MAKE_PREBUILDS=true
 
+** UKCA Tutorials at vn11.7 **
+
+The UKCA Tutorials at vn11.7 need some specific settings, particularly setting `grib_library: libgrib-api-dev` in `group_vars/all.yml`. The current roles will perform the equivalent to `sudo install-um-extras`, but following that you will need to run the following commands in sequence:
+
+    um-setup -s fcm:shumlib.x_tr@um11.7
+    install-um-data
+    install-ukca-data
+    install-rose-meta
+    cd src
+    fcm checkout fcm:um.x_tr@vn11.7 UM11.7
+    cd UM10.9
+    rose stem --group=install -S CENTRAL_INSTALL=true -S UKCA=true
+    rose stem --group=kgo,ukca -S GENERATE_KGO=true
+    rose stem --group=fcm_make --name=vn11.7_prebuilds -S MAKE_PREBUILDS=true
+    rose stem --group=install_source
+    rose stem -O offline --group=fcm_make --name=vn11.7_offline_prebuilds -S MAKE_PREBUILDS=true
+

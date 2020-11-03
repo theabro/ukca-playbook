@@ -17,6 +17,13 @@
     - sqlite3
     - pep8
 
+#- name: Remove python-gobject
+#  apt:
+#    state: absent
+#    autoremove: yes
+#    pkg:
+#    - python-gobject
+
 - name: install make
   apt:
     pkg:
