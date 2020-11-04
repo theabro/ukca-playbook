@@ -74,7 +74,7 @@
   until: git_deploy is success
 
 # Extend root volume using lvm to include a new physical disk
-- include: create-data-vol.yml
-  when: not local
+#- include: create-data-vol.yml
+#  when: not local
 
 

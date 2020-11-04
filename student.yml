@@ -16,7 +16,7 @@
   roles:
   # configure the VM and download the metomi-vm files from github
     - configure-os
-    - create-data-vol
+    - mount-data-vol
     - install-base
     - install-desktop
     - install-um-extras

@@ -76,6 +76,9 @@ The playbook is run using the following command from inside the repository::
 
     ansible-playbook main.yml -i inventory.ini
 
+On macOS you may first need to
+
+    export PATH="/Users/luke/Library/Python/2.7/bin:$PATH"
 
 The playbook creates an ssh key and places it inside a folder called ssh-keys inside a folder labelled by the hostname.
 The public key is uploaded and added to the accepted ssh keys on the remote machine but it is up to the user to add the key
@@ -159,3 +162,6 @@ The UKCA Tutorials at vn11.7 need some specific settings, particularly setting `
     rose stem --group=install_source
     rose stem -O offline --group=fcm_make --name=vn11.7_offline_prebuilds -S MAKE_PREBUILDS=true
 
+
+TODO: 	 move to ext4 for volume
+	 work on nfs mount

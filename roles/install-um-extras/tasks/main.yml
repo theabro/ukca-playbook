@@ -24,9 +24,10 @@
     - texlive-science
 
 - name: Add mule requirement
-  copy:
-    src: mule
+  lineinfile:
     dest: /usr/lib/python2.7/dist-packages/mule.pth
+    line: "/home/{{ username }}/umdir/mule/lib"
+    create: yes
 
 - name: Update .profile with UMDIR/bin in PATH
   blockinfile:
@@ -40,29 +41,53 @@
 
 
 # Install Iris from miniconda
-- block: Install Iris via conda
+- block: 
+    - name: create Downloads directory
+      file:
+        path: /home/{{ username }}/Downloads
+        state: directory
     - name: Download Miniconda
       get_url:
         url: https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
         dest: /home/{{ username }}/Downloads
-	mode: 0755
-
+        mode: 0755
     - name: Run miniconda script
-      shell: Miniconda3-latest-Linux-x86_64.sh -b
-      become: yes
-      become_user: "{{ username }}"
+      shell: /home/{{ username }}/Downloads/Miniconda3-latest-Linux-x86_64.sh -b
       args:
-         executable: /bin/bash
-         chdir: /home/{{ username }}/Downloads
-
+        executable: /bin/bash
     - name: Install via conda
       shell: PATH=~/miniconda3/bin:$PATH conda install -y -c conda-forge iris ipython
-      become: yes
-      become_user: "{{ username }}"
       args:
-         executable: /bin/bash
-
+        executable: /bin/bash
     - name: Update .bashrc with python specifics
       blockinfile:
         block: "{{ lookup('file', 'bashrc_python') }}"
         path: /home/{{ username }}/.bashrc
+    - name: Remove Miniconda3-latest-Linux-x86_64.sh file
+      file:
+        path: /home/{{ username }}/Downloads/Miniconda3-latest-Linux-x86_64.sh
+        state: absent
+  become: yes
+  become_user: "{{ username }}"
+
+
+# Set up .metomi additions
+- block:
+    - name: create .metomi directory
+      file:
+        path: /home/{{ username }}/.metomi/fcm
+        state: directory
+    - name: Copy keyword.cfg file
+      copy:
+        src: keyword
+        dest: /home/{{ username }}/.metomi/fcm/keyword.cfg
+    - name: Set syntax highlighting in .bashrc
+      lineinfile:
+        dest: /home/{{ username }}/.metomi/rose.conf
+        create: yes
+        line: "{{ item }}"
+      with_items:
+        - "[rose-ana]"
+        - "kgo-database=.true."
+  become: yes
+  become_user: "{{ username }}"

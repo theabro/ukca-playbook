@@ -100,6 +100,21 @@
     force: yes
     owner: "{{ username }}"
 
+- name: Make /work/source folder
+  file:
+    path: /work/source
+    state: directory
+    owner: root
+    mode: 0755
+
+- name: symlink source
+  file:
+    src: /work/source
+    dest: /home/{{ username }}/source
+    state: link
+    force: yes
+    owner: "{{ username }}"
+
 # Download and install Xconv into $UMDIR/bin
 - name: make UMDIR/bin
   file:

@@ -1,0 +1,72 @@
+- name: mount to /work
+  mount:
+    fstype: ext2
+    src: /dev/sdb1
+    path: /work
+    state: mounted
+    opts: ro
+
+- name: symlink umdir
+  file:
+    src: /work/umdir
+    dest: /home/{{ username }}/umdir
+    state: link
+    force: yes
+    owner: "{{ username }}"
+
+- name: Make HOME/etc folder
+  file:
+    path: /home/{{ username }}/etc
+    state: directory
+    owner: "{{ username }}"
+
+- name: symlink rose-meta
+  file:
+    src: /work/etc/rose-meta
+    dest: /home/{{ username }}/etc/rose-meta
+    state: link
+    force: yes
+
+- name: Make HOME/cylc-run folder
+  file:
+    path: /home/{{ username }}/cylc-run
+    state: directory
+    owner: "{{ username }}"
+
+- name: symlink cylc-run prebuild directories
+  file:
+    src: /work/cylc-run/vn11.7_prebuilds
+    dest: /home/{{ username }}/cylc-run/vn11.7_prebuilds
+    state: link
+    force: yes
+
+- name: symlink cylc-run offline prebuild directories
+  file:
+    src: /work/cylc-run/vn11.7_offline_prebuilds
+    dest: /home/{{ username }}/cylc-run/vn11.7_offline_prebuilds
+    state: link
+    force: yes
+
+- name: symlink src
+  file:
+    src: /work/src
+    dest: /home/{{ username }}/src
+    state: link
+    force: yes
+
+- name: symlink doc
+  file:
+    src: /work/doc
+    dest: /home/{{ username }}/doc
+    state: link
+    force: yes
+
+- name: symlink source
+  file:
+    src: /work/source
+    dest: /home/{{ username }}/source
+    state: link
+    force: yes
+
+
+
