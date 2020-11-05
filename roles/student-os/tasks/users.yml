@@ -1,0 +1,46 @@
+- name: create hashed password
+  command: openssl passwd -1 {{ user_password }}
+  register: result
+
+- set_fact:
+    hashed_password: "{{ result.stdout }}"
+
+- name: create new user
+  user:
+    name: "{{ user }}"
+    password: "{{ hashed_password }}"
+    groups: "{{ user_groups }}"
+    shell: /bin/bash
+
+- name: create ssh key directory
+  file:
+    path: ssh_keys
+    state: directory
+  delegate_to: 127.0.0.1
+  become: no
+
+- stat:
+    path: ssh_keys/id_rsa_{{ user }}.pub
+  register: status
+  delegate_to: 127.0.0.1
+  become: no
+
+- name: create ssh key for  "{{ user }}"
+  openssh_keypair:
+    path: "ssh_keys/id_rsa_{{ user }}"
+    type: rsa
+    size: 2048
+    state: present
+    force: no
+  delegate_to: 127.0.0.1
+  become: no
+
+- name: copy ssh key to remote host
+  copy:
+    src: ssh_keys/id_rsa_{{ user }}.pub
+    dest: /home/{{ user }}/.ssh/
+
+- name: add ssh key to remote account
+  authorized_key:
+    user: "{{ user }}"
+    key: "{{ lookup('file', 'ssh_keys/id_rsa_{{ user }}.pub') }}"

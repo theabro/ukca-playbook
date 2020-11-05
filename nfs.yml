@@ -12,6 +12,12 @@
     - name: set mountpoints
       mount: path=/share src=/dev/sdb1 fstype=ext2 opts=ro state=mounted
 
+    - name: Create nfs4 mountable dir
+      file: path=/srv/nfs4/umshared state=directory mode=777 owner=root group=root
+
+    - name: set mount to nfs4
+      mount: path=/srv/nfs4/umshared src=/share opts=bind state=mounted
+
     - name: Ensure NFS utilities are installed.
       apt: 
         pkg:
@@ -23,6 +29,11 @@
 
     - name: restart nfs server
       service: name=nfs-kernel-server state=restarted
+
+    - name: open firewall port for nfs
+      shell: ufw allow from 192.168.3.0/24 to any port nfs
+      args:
+        executable: /bin/bash
 
 # create an admin user
     - name: create hashed password

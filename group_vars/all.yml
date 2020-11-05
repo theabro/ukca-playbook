@@ -1,7 +1,10 @@
 ---
 
-username: vagrant
-password: vagrant
+#username: vagrant
+#password: vagrant
+
+admin_username: admin
+admin_password: SomeAdminPassword
 
 
 # If running on local vagrant vm, set local: true
@@ -17,3 +20,6 @@ ROSE_VERSION: 2019.01.3
 # UMvn11.2+:            libeccodes-dev
 # UMvn11.1 and earlier: libgrib-api-dev
 grib_library: libeccodes-dev
+
+# internal IP of NFS machine - could change with each deployment
+nfs_internal_ip: 192.168.3.8

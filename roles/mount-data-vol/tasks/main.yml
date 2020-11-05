@@ -1,3 +1,4 @@
 # Mount JASMIN data volume
-- include: mount-vol.yml
+#- include: mount-vol.yml
+- include: mount-nfs.yml
 

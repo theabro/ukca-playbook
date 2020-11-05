@@ -1,39 +1,16 @@
-- name: Mount an NFS volume
-  ansible.posix.mount:
-    src: 192.168.1.100:/nfs/ssd/shared_data
-    path: /mnt/shared_data
-    opts: rw,sync,hard,intr
-    state: mounted
-    fstype: nfs
-
-
-
-- name: Use parted on mounted volume
-  parted:
-     device: /dev/sdb
-     number: 1
-     flags: [ lvm ]
-     state: present
-
-- name: define filesystem on mounted volume
-  filesystem:
-     fstype: ext2
-     dev: /dev/sdb1
+# install NFS utils
+- name: Ensure NFS utilities are installed.
+  apt: 
+    pkg:
+    - nfs-common
 
 - name: mount to /work
   mount:
-    fstype: ext2
-    src: /dev/sdb1
+    fstype: nfs
+    src: "{{ nfs_internal_ip }}:/umshared"
     path: /work
     state: mounted
-
-# Put large directories on external volume
-- name: Make /work/umdir folder
-  file:
-    path: /work/umdir
-    state: directory
-    owner: root
-    mode: 0755
+    opts: ro
 
 - name: symlink umdir
   file:
@@ -41,15 +18,6 @@
     dest: /home/{{ username }}/umdir
     state: link
     force: yes
-    owner: "{{ username }}"
-
-# put $HOME/etc/rose-meta on external volume
-- name: Make /work/etc/rose-meta folder
-  file:
-    path: /work/etc/rose-meta
-    state: directory
-    owner: root
-    mode: 0755
 
 - name: Make HOME/etc folder
   file:
@@ -63,29 +31,26 @@
     dest: /home/{{ username }}/etc/rose-meta
     state: link
     force: yes
+
+- name: Make HOME/cylc-run folder
+  file:
+    path: /home/{{ username }}/cylc-run
+    state: directory
     owner: "{{ username }}"
 
-- name: Make /work/cylc-run folder
+- name: symlink cylc-run prebuild directories
   file:
-    path: /work/cylc-run
-    state: directory
-    owner: root
-    mode: 0755
-
-- name: symlink cylc-run
-  file:
-    src: /work/cylc-run
-    dest: /home/{{ username }}/cylc-run
+    src: /work/cylc-run/vn11.7_prebuilds
+    dest: /home/{{ username }}/cylc-run/vn11.7_prebuilds
     state: link
     force: yes
-    owner: "{{ username }}"
 
-- name: Make /work/src folder
+- name: symlink cylc-run offline prebuild directories
   file:
-    path: /work/src
-    state: directory
-    owner: root
-    mode: 0755
+    src: /work/cylc-run/vn11.7_offline_prebuilds
+    dest: /home/{{ username }}/cylc-run/vn11.7_offline_prebuilds
+    state: link
+    force: yes
 
 - name: symlink src
   file:
@@ -93,14 +58,6 @@
     dest: /home/{{ username }}/src
     state: link
     force: yes
-    owner: "{{ username }}"
-
-- name: Make /work/doc folder
-  file:
-    path: /work/doc
-    state: directory
-    owner: root
-    mode: 0755
 
 - name: symlink doc
   file:
@@ -108,32 +65,13 @@
     dest: /home/{{ username }}/doc
     state: link
     force: yes
-    owner: "{{ username }}"
 
-# Download and install Xconv into $UMDIR/bin
-- name: make UMDIR/bin
+- name: symlink source
   file:
-    path: /work/umdir/bin
-    state: directory
-    mode: 0755
-
-- name: Download & install Xconv to UMDIR/bin
-  unarchive:
-    src: http://cms.ncas.ac.uk/documents/xconv/_downloads/xconv1.94_linux_x86_64.tar.gz
-    dest: /work/umdir/bin
-    remote_src: yes
-
-- name: link xconv1.94 to xconv
-  file:
-    src: /work/umdir/bin/xconv1.94
-    dest: /work/umdir/bin/xconv
+    src: /work/source
+    dest: /home/{{ username }}/source
     state: link
     force: yes
 
-- name: link xconv1.94 to convsh
-  file:
-    src: /work/umdir/bin/xconv1.94
-    dest: /work/umdir/bin/convsh
-    state: link
-    force: yes
+
 
