@@ -162,6 +162,12 @@ The UKCA Tutorials at vn11.7 need some specific settings, particularly setting `
     rose stem --group=install_source
     rose stem -O offline --group=fcm_make --name=vn11.7_offline_prebuilds -S MAKE_PREBUILDS=true
 
+You may need to
+
+    chown nobody:nogroup -R .
+
+the contents of the shared drive to allow the NFS mount to work correctly.
+
 
 TODO: 	 move to ext4 for volume
 	 work on nfs mount

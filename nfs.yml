@@ -1,0 +1,80 @@
+---
+- hosts: nfs_server
+  remote_user: root
+
+  tasks:
+    - name: Create mountable dir
+      file: path=/share state=directory mode=777 owner=root group=root
+
+    - name: make sure the mount drive has a filesystem
+      filesystem: fstype=ext2 dev=/dev/sdb1
+
+    - name: set mountpoints
+      mount: path=/share src=/dev/sdb1 fstype=ext2 opts=ro state=mounted
+
+    - name: Ensure NFS utilities are installed.
+      apt: 
+        pkg:
+        - nfs-common
+        - nfs-kernel-server
+
+    - name: copy /etc/exports
+      template: src=exports.j2 dest=/etc/exports owner=root group=root
+
+    - name: restart nfs server
+      service: name=nfs-kernel-server state=restarted
+
+# create an admin user
+    - name: create hashed password
+      command: openssl passwd -1 {{ password }}
+      register: result
+    
+    - set_fact:
+        hashed_password: "{{ result.stdout }}"
+
+    - name: create new user
+      user:
+        name: admin
+        password: "{{ hashed_password }}"
+        groups: sudo,netdev
+        shell: /bin/bash
+    
+    - name: create ssh key directory
+      file:
+        path: ssh_keys/ukca-nfs
+        state: directory
+      delegate_to: 127.0.0.1
+      become: no
+    
+    - stat:
+        path: ssh_keys/ukca-nfs/id_rsa_nfs.pub
+      register: status
+      delegate_to: 127.0.0.1
+      become: no
+    
+    - name: create ssh key
+      command: ssh-keygen -t rsa -b 2048 -f id_rsa_nfs -q -N ""
+      args:
+        chdir: ssh_keys/ukca-nfs
+      delegate_to: 127.0.0.1
+      register: result
+      failed_when: "'FAILED' in result.stderr and 'id_rsa_nfs already exists' not in result.stderr"
+      become: no
+      when: not status.stat.exists
+    
+    - name: copy ssh key to remote host
+      copy:
+        src: ssh_keys/ukca-nfs/id_rsa_nfs.pub
+        dest: /home/admin/.ssh/
+    
+    - name: add ssh key to remote account
+      authorized_key:
+        user: "admin"
+        key: "{{ lookup('file', 'ssh_keys/ukca-nfs/id_rsa_nfs.pub') }}"
+      
+  roles:
+    - remove-root-access    
+
+  handlers:
+  - name: Restart ssh
+    service: name=ssh state=restarted
