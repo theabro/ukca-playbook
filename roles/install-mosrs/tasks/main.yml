@@ -52,10 +52,10 @@
     state: absent
 
 - name: Add script that caches the user's Science Repository Service password for the session
-  command: dos2unix -n /home/{{ username }}/metomi-vms/usr/local/bin/mosrs-cache-password /usr/local/bin/mosrs-cache-password
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/usr/local/bin/mosrs-cache-password /usr/local/bin/mosrs-cache-password
 
 - name: Add script to start gpg-agent and cache the password when needed and source it in .bashrc
-  command: dos2unix -n /home/{{ username }}/metomi-vms/usr/local/bin/mosrs-setup-gpg-agent /usr/local/bin/mosrs-setup-gpg-agent
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/usr/local/bin/mosrs-setup-gpg-agent /usr/local/bin/mosrs-setup-gpg-agent
 
 - name: Edit .bashrc
   lineinfile:
@@ -64,7 +64,7 @@
 
 
 - name: Add script to install Rose meta data
-  command: dos2unix -n /home/{{ username }}/metomi-vms/usr/local/bin/install-rose-meta /usr/local/bin/install-rose-meta
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/usr/local/bin/install-rose-meta /usr/local/bin/install-rose-meta
 
 #### Configure FCM
 - name: make subversion folder
@@ -73,10 +73,10 @@
     state: directory
 
 - name: Set up subversion to not use plaintext passwords for Met Office Science Repository Service
-  command: dos2unix -n /home/{{ username }}/metomi-vms/etc/subversion/servers /etc/subversion/servers
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/etc/subversion/servers /etc/subversion/servers
 
 - name: Set up subversion to use gpg-agent as the password store
-  command: dos2unix -n /home/{{ username }}/metomi-vms/etc/subversion/config /etc/subversion/config
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/etc/subversion/config /etc/subversion/config
 
 - name: make fcm folder
   file:
@@ -84,7 +84,7 @@
     state: directory
 
 - name: Set up FCM keywords
-  command: dos2unix -n /home/{{ username }}/metomi-vms/opt/metomi-site/etc/fcm/keyword.cfg /opt/metomi-site/etc/fcm/keyword.cfg
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/opt/metomi-site/etc/fcm/keyword.cfg /opt/metomi-site/etc/fcm/keyword.cfg
 
 - name: link Keywords
   file:

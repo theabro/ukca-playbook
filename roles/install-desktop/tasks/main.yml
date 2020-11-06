@@ -99,7 +99,7 @@
     - autologin-user-timeout=0
 
 # Docs shortcut
-- command: dos2unix -n /home/{{ username }}/metomi-vms/home/Desktop/docs.desktop /home/{{ username }}/Desktop/docs.desktop
+- command: dos2unix -n /home/{{ vagrant }}/metomi-vms/home/Desktop/docs.desktop /home/{{ username }}/Desktop/docs.desktop
 
 # Open terminal on startup
 - block:

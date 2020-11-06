@@ -1,7 +1,6 @@
 ---
 
-#username: vagrant
-#password: vagrant
+vagrant: vagrant
 
 admin_username: admin
 admin_password: SomeAdminPassword
@@ -22,4 +21,4 @@ ROSE_VERSION: 2019.01.3
 grib_library: libeccodes-dev
 
 # internal IP of NFS machine - could change with each deployment
-nfs_internal_ip: 192.168.3.8
+nfs_internal_ip: 192.168.3.13

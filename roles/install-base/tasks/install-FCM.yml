@@ -47,7 +47,7 @@
 
 # Add the fcm wrapper script
 - name: Add the fcm wrapper script
-  command: dos2unix -n /home/{{ username }}/metomi-vms/usr/local/bin/fcm /usr/local/bin/fcm
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/usr/local/bin/fcm /usr/local/bin/fcm
   become: yes
 
 # Configure FCM diff and merge viewers
@@ -58,7 +58,7 @@
   become: yes
 
 - name: Copy external.cfg file into place
-  command: dos2unix -n /home/{{ username }}/metomi-vms/opt/metomi-site/etc/fcm/external.cfg /opt/metomi-site/etc/fcm/external.cfg
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/opt/metomi-site/etc/fcm/external.cfg /opt/metomi-site/etc/fcm/external.cfg
   become: yes
 
 - name: create symlink external.cfg

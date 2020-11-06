@@ -3,26 +3,29 @@
   remote_user: root
 
   tasks:
-    - name: Create mountable dir
-      file: path=/share state=directory mode=777 owner=root group=root
-
-    - name: make sure the mount drive has a filesystem
-      filesystem: fstype=ext2 dev=/dev/sdb1
-
-    - name: set mountpoints
-      mount: path=/share src=/dev/sdb1 fstype=ext2 opts=ro state=mounted
-
-    - name: Create nfs4 mountable dir
-      file: path=/srv/nfs4/umshared state=directory mode=777 owner=root group=root
-
-    - name: set mount to nfs4
-      mount: path=/srv/nfs4/umshared src=/share opts=bind state=mounted
-
+# set up NFS
     - name: Ensure NFS utilities are installed.
       apt: 
         pkg:
         - nfs-common
         - nfs-kernel-server
+        state: present
+        update_cache: yes
+
+    - name: Create mountable dir
+      file: path=/share state=directory mode=777 owner=root group=root
+
+    - name: make sure the mount drive has a filesystem
+      filesystem: fstype=ext4 dev=/dev/sdb1
+
+    - name: set mountpoints
+      mount: path=/share src=/dev/sdb1 fstype=ext4 opts=ro state=mounted
+
+    - name: Create nfs4 mountable dir
+      file: path=/srv/nfs4/umshared state=directory mode=777 owner=root group=root
+
+    - name: set mount to nfs4
+      mount: path=/srv/nfs4/umshared src=/share opts=bind state=mounted fstype=ext4 
 
     - name: copy /etc/exports
       template: src=exports.j2 dest=/etc/exports owner=root group=root
@@ -37,7 +40,7 @@
 
 # create an admin user
     - name: create hashed password
-      command: openssl passwd -1 {{ password }}
+      command: openssl passwd -1 {{ admin_password }}
       register: result
     
     - set_fact:
@@ -45,46 +48,59 @@
 
     - name: create new user
       user:
-        name: admin
+        name: "{{ admin_username }}"
         password: "{{ hashed_password }}"
         groups: sudo,netdev
         shell: /bin/bash
     
     - name: create ssh key directory
       file:
-        path: ssh_keys/ukca-nfs
+        path: ssh_keys
         state: directory
       delegate_to: 127.0.0.1
       become: no
     
     - stat:
-        path: ssh_keys/ukca-nfs/id_rsa_nfs.pub
+        path: ssh_keys/id_rsa_{{ admin_username }}.pub
       register: status
       delegate_to: 127.0.0.1
       become: no
     
-    - name: create ssh key
-      command: ssh-keygen -t rsa -b 2048 -f id_rsa_nfs -q -N ""
-      args:
-        chdir: ssh_keys/ukca-nfs
+    - name: create ssh key for  "{{ admin_username }}"
+      openssh_keypair:
+        path: "ssh_keys/id_rsa_{{ admin_username }}"
+        type: rsa
+        size: 2048
+        state: present
+        force: no
       delegate_to: 127.0.0.1
-      register: result
-      failed_when: "'FAILED' in result.stderr and 'id_rsa_nfs already exists' not in result.stderr"
       become: no
-      when: not status.stat.exists
-    
+
     - name: copy ssh key to remote host
       copy:
-        src: ssh_keys/ukca-nfs/id_rsa_nfs.pub
-        dest: /home/admin/.ssh/
+        src: ssh_keys/id_rsa_{{ admin_username }}.pub
+        dest: /home/{{ admin_username }}/.ssh/
     
     - name: add ssh key to remote account
       authorized_key:
-        user: "admin"
-        key: "{{ lookup('file', 'ssh_keys/ukca-nfs/id_rsa_nfs.pub') }}"
-      
-  roles:
-    - remove-root-access    
+        user: "{{ admin_username }}"
+        key: "{{ lookup('file', 'ssh_keys/id_rsa_{{ admin_username }}.pub') }}"
+
+# remove root access now we have an admin user
+    - name: Disallow password authentication
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PasswordAuthentication"
+                  line="PasswordAuthentication no"
+                  state=present
+      notify: Restart ssh
+    
+    - name: Disallow root SSH access
+      lineinfile: dest=/etc/ssh/sshd_config
+                  regexp="^PermitRootLogin"
+                  line="PermitRootLogin no"
+                  state=present
+      notify: Restart ssh
+   
 
   handlers:
   - name: Restart ssh

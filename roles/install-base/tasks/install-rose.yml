@@ -34,7 +34,7 @@
 
 # Add the Rose wrapper scripts
 - name: Add the Rose wrapper scripts
-  command: dos2unix -n /home/{{ username }}/metomi-vms/usr/local/bin/rose /usr/local/bin/rose
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/usr/local/bin/rose /usr/local/bin/rose
 - file:
     src: /usr/local/bin/rose
     dest: /usr/local/bin/rosie
@@ -43,7 +43,7 @@
 
 # Configure Rose
 - name: Configure Rose
-  command: dos2unix -n /home/{{ username }}/metomi-vms/opt/metomi-site/etc/rose.conf /opt/metomi-site/etc/rose.conf
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/opt/metomi-site/etc/rose.conf /opt/metomi-site/etc/rose.conf
 
 - file:
     src: /opt/metomi-site/etc/rose.conf
@@ -66,7 +66,7 @@
     become: yes
     ignore_errors: yes
 
-  - command: dos2unix -n /home/{{ username }}/metomi-vms/home/{{ item }} /home/{{ username }}/{{ item }}
+  - command: dos2unix -n /home/{{ vagrant }}/metomi-vms/home/{{ item }} /home/{{ username }}/{{ item }}
     with_items:
       - .vimrc
       - .emacs
@@ -138,8 +138,8 @@
     path: /opt/metomi-site/etc/httpd
     state: directory
 
-- command: dos2unix -n /home/{{ username }}/metomi-vms/opt/metomi-site/etc/httpd/rosie-wsgi.conf /opt/metomi-site/etc/httpd/rosie-wsgi.conf
-- command: dos2unix -n /home/{{ username }}/metomi-vms/opt/metomi-site/etc/httpd/svn.conf /opt/metomi-site/etc/httpd/svn.conf
+- command: dos2unix -n /home/{{ vagrant }}/metomi-vms/opt/metomi-site/etc/httpd/rosie-wsgi.conf /opt/metomi-site/etc/httpd/rosie-wsgi.conf
+- command: dos2unix -n /home/{{ vagrant }}/metomi-vms/opt/metomi-site/etc/httpd/svn.conf /opt/metomi-site/etc/httpd/svn.conf
 
 # remove /var/www/html directory as will be linked to /opt below
 - name: Remove /var/www/html directory
@@ -157,7 +157,7 @@
    - {src: /opt/metomi-site/etc/httpd/rosie-wsgi.conf, dest: /etc/apache2/conf-enabled/rosie-wsgi.conf}
    - {src: /opt/metomi-site/etc/httpd/svn.conf, dest: /etc/apache2/conf-enabled/svn.conf}
 
-- command: dos2unix -n /home/{{ username }}/metomi-vms/var/www/html/index.html /var/www/html/index.html
+- command: dos2unix -n /home/{{ vagrant }}/metomi-vms/var/www/html/index.html /var/www/html/index.html
 
 - name: restart apache
   service:
@@ -211,7 +211,7 @@
     path: /opt/metomi-site/etc/hooks
     state: directory
 
-- command: dos2unix -n /home/{{ username }}/metomi-vms/opt/metomi-site/etc/hooks/{{ item.src }} /opt/metomi-site/etc/hooks/{{ item.dest }}
+- command: dos2unix -n /home/{{ vagrant }}/metomi-vms/opt/metomi-site/etc/hooks/{{ item.src }} /opt/metomi-site/etc/hooks/{{ item.dest }}
   with_items:
     - {src: pre-commit , dest: pre-commit}
     - {src: post-commit, dest: post-commit}
@@ -231,7 +231,7 @@
 
 #### Miscellaneous utilities
 - name: install misc utilities
-  command: dos2unix -n /home/{{ username }}/metomi-vms/usr/local/bin/{{ item }} /usr/local/bin/{{ item }}
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/usr/local/bin/{{ item }} /usr/local/bin/{{ item }}
   with_items:
     - install-iris
     - install-jules-benchmark-data
@@ -243,4 +243,9 @@
     - install-um-extras
     - run-test-batteries
     - um-setup
+
+# remove roses-tmp directory
+- file:
+    path: /home/{{ username }}/roses-tmp
+    state: absent
 

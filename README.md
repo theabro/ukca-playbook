@@ -156,18 +156,18 @@ The UKCA Tutorials at vn11.7 need some specific settings, particularly setting `
     cd src
     fcm checkout fcm:um.x_tr@vn11.7 UM11.7
     cd UM11.7
-    rose stem --group=install -S CENTRAL_INSTALL=true -S UKCA=true
+    rose stem --group=install,install_source -S CENTRAL_INSTALL=true -S UKCA=true
     rose stem --group=kgo,ukca -S GENERATE_KGO=true
     rose stem --group=fcm_make --name=vn11.7_prebuilds -S MAKE_PREBUILDS=true
-    rose stem --group=install_source
     rose stem -O offline --group=fcm_make --name=vn11.7_offline_prebuilds -S MAKE_PREBUILDS=true
 
 You may need to
 
-    chown nobody:nogroup -R .
+    sudo chown nobody:nogroup -R .
 
 the contents of the shared drive to allow the NFS mount to work correctly.
 
 
 TODO: 	 move to ext4 for volume
 	 work on nfs mount
+

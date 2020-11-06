@@ -44,7 +44,7 @@
 
 # Add the Cylc wrapper scripts
 - name: Add the Cylc wrapper scripts
-  command: dos2unix -n /home/{{ username }}/metomi-vms/usr/local/bin/cylc /usr/local/bin/cylc
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/usr/local/bin/cylc /usr/local/bin/cylc
 
 - name: link files
   file:
@@ -66,7 +66,7 @@
     state: directory
 
 - name: Copy global.rc config file
-  command: dos2unix -n /home/{{ username }}/metomi-vms/opt/metomi-site/conf/global.rc /opt/metomi-site/conf/global.rc
+  command: dos2unix -n /home/{{ vagrant }}/metomi-vms/opt/metomi-site/conf/global.rc /opt/metomi-site/conf/global.rc
 
 - name: Link files
   file:

@@ -1,75 +1,75 @@
+# first make sure /home/vagrant is readable by other users
+- name: Make /home/{{ vagrant }} directory tree readable
+  file:
+    path: /home/{{ vagrant }}
+    mode: u=rwX,g=rX,o=rX
+    recurse: yes
+
 # install NFS utils
 - name: Ensure NFS utilities are installed.
   apt: 
     pkg:
     - nfs-common
 
-- name: mount to /work
+- name: mount to /umshared
   mount:
     fstype: nfs
     src: "{{ nfs_internal_ip }}:/umshared"
-    path: /work
+    path: /umshared
     state: mounted
     opts: ro
 
 - name: symlink umdir
   file:
-    src: /work/umdir
-    dest: /home/{{ username }}/umdir
+    src: /umshared/umdir
+    dest: /home/{{ vagrant }}/umdir
     state: link
     force: yes
 
 - name: Make HOME/etc folder
   file:
-    path: /home/{{ username }}/etc
+    path: /home/{{ vagrant }}/etc
     state: directory
-    owner: "{{ username }}"
+    owner: "{{ vagrant }}"
 
 - name: symlink rose-meta
   file:
-    src: /work/etc/rose-meta
-    dest: /home/{{ username }}/etc/rose-meta
+    src: /umshared/etc/rose-meta
+    dest: /home/{{ vagrant }}/etc/rose-meta
     state: link
     force: yes
 
 - name: Make HOME/cylc-run folder
   file:
-    path: /home/{{ username }}/cylc-run
+    path: /home/{{ vagrant }}/cylc-run
     state: directory
-    owner: "{{ username }}"
+    owner: "{{ vagrant }}"
 
 - name: symlink cylc-run prebuild directories
   file:
-    src: /work/cylc-run/vn11.7_prebuilds
-    dest: /home/{{ username }}/cylc-run/vn11.7_prebuilds
-    state: link
-    force: yes
-
-- name: symlink cylc-run offline prebuild directories
-  file:
-    src: /work/cylc-run/vn11.7_offline_prebuilds
-    dest: /home/{{ username }}/cylc-run/vn11.7_offline_prebuilds
+    src: /umshared/cylc-run
+    dest: /home/{{ vagrant }}/cylc-run
     state: link
     force: yes
 
 - name: symlink src
   file:
-    src: /work/src
-    dest: /home/{{ username }}/src
+    src: /umshared/src
+    dest: /home/{{ vagrant }}/src
     state: link
     force: yes
 
 - name: symlink doc
   file:
-    src: /work/doc
-    dest: /home/{{ username }}/doc
+    src: /umshared/doc
+    dest: /home/{{ vagrant }}/doc
     state: link
     force: yes
 
 - name: symlink source
   file:
-    src: /work/source
-    dest: /home/{{ username }}/source
+    src: /umshared/source
+    dest: /home/{{ vagrant }}/source
     state: link
     force: yes
 

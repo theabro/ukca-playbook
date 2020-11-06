@@ -38,37 +38,36 @@
   become: no
 
 - stat:
-    path: ssh_keys/{{ inventory_hostname }}/id_rsa_metomi.pub
+    path: ssh_keys/id_rsa_{{ username }}.pub
   register: status
   delegate_to: 127.0.0.1
   become: no
 
-- name: create ssh key
-  command: ssh-keygen -t rsa -b 2048 -f id_rsa_metomi -q -N ""
-  args:
-    chdir: ssh_keys/{{ inventory_hostname }}
+- name: create ssh key for  "{{ username }}"
+  openssh_keypair:
+    path: "ssh_keys/id_rsa_{{ username }}"
+    type: rsa
+    size: 2048
+    state: present
+    force: no
   delegate_to: 127.0.0.1
-  register: result
-  failed_when: "'FAILED' in result.stderr and 'id_rsa_metomi already exists' not in result.stderr"
   become: no
-  when: not status.stat.exists
-
 
 - name: copy ssh key to remote host
   copy:
-    src: ssh_keys/{{ inventory_hostname }}/id_rsa_metomi.pub
+    src: ssh_keys/id_rsa_{{ username }}.pub
     dest: /home/{{ username }}/.ssh/
 
 - name: add ssh key to remote account
   authorized_key:
     user: "{{ username }}"
-    key: "{{ lookup('file', 'ssh_keys/{{ inventory_hostname }}/id_rsa_metomi.pub') }}"
+    key: "{{ lookup('file', 'ssh_keys/id_rsa_{{ username }}.pub') }}"
 
 # Download metomivms data from github
 - name: download metomi-vm-files from github
   git:
     repo: https://github.com/metomi/metomi-vms.git
-    dest: /home/{{ username }}/metomi-vms
+    dest: /home/{{ vagrant }}/metomi-vms
     force: yes
   register: git_deploy
   until: git_deploy is success

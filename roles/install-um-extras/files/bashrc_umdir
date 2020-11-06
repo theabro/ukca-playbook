@@ -1,2 +1,2 @@
 # Set UMDIR
-export UMDIR=$HOME/umdir
+export UMDIR=/home/vagrant/umdir

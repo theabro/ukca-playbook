@@ -18,13 +18,14 @@
 
 # define users
 - include: users.yml user={{ admin_username }} user_password={{ admin_password }} user_groups="sudo,netdev"
+- include: users.yml user={{ vagrant }} user_password={{ vagrant }} user_groups="netdev" 
 - include: users.yml user={{ username }} user_password={{ password }} user_groups="netdev" 
 
 # Download metomivms data from github
 - name: download metomi-vm-files from github
   git:
     repo: https://github.com/metomi/metomi-vms.git
-    dest: /home/{{ username }}/metomi-vms
+    dest: /home/{{ vagrant }}/metomi-vms
     force: yes
   register: git_deploy
   until: git_deploy is success
