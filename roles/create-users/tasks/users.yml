@@ -1,0 +1,117 @@
+- name: create hashed password
+  command: openssl passwd -1 {{ user_password }}
+  register: result
+
+- set_fact:
+    hashed_password: "{{ result.stdout }}"
+
+- name: create new user
+  user:
+    name: "{{ user }}"
+    password: "{{ hashed_password }}"
+    groups: "{{ user_groups }}"
+    shell: /bin/bash
+
+- name: create ssh key directory
+  file:
+    path: ssh_keys
+    state: directory
+  delegate_to: 127.0.0.1
+  become: no
+
+- stat:
+    path: ssh_keys/id_rsa_{{ user }}.pub
+  register: status
+  delegate_to: 127.0.0.1
+  become: no
+
+- name: create ssh key for  "{{ user }}"
+  openssh_keypair:
+    path: "ssh_keys/id_rsa_{{ user }}"
+    type: rsa
+    size: 2048
+    state: present
+    force: no
+  delegate_to: 127.0.0.1
+  become: no
+
+- name: copy ssh key to remote host
+  copy:
+    src: ssh_keys/id_rsa_{{ user }}.pub
+    dest: /home/{{ user }}/.ssh/
+
+- name: add ssh key to remote account
+  authorized_key:
+    user: "{{ user }}"
+    key: "{{ lookup('file', 'ssh_keys/id_rsa_{{ user }}.pub') }}"
+
+# Create a desktop shortcut
+- name: Create a desktop shortcut
+  file:
+    path: /home/{{ user }}/Desktop
+    state: directory
+    owner: "{{ user }}"
+
+- name: Add terminal shortcut to desktop
+  copy:
+    src: /usr/share/applications/lxterminal.desktop
+    dest: /home/{{ user }}/Desktop
+    remote_src: yes
+    owner: "{{ user }}"
+
+- name: Enable autologin (1/2)
+  copy:
+    src: lxdeconf
+    dest: /usr/share/lightdm/lightdm.conf.d/lxde.conf
+
+# need to populate username string here
+- name: Enable autologin (2/2)
+  lineinfile:
+    dest: /usr/share/lightdm/lightdm.conf.d/lxde.conf
+    line: "{{ item }}"
+  with_items:
+    - autologin-user={{ user }}
+    - autologin-user-timeout=0
+
+# Open terminal on startup
+- block:
+    - name: create autostart dir
+      file:
+        path: /home/{{ user }}/.config/autostart
+        state: directory
+
+    - name: Configure middle button emulation
+      copy:
+        src: xinput
+        dest: /home/{{ user }}/.config/autostart/xinput.desktop
+
+    - name: Copy terminal shortcut to autostart folder
+      copy:
+        src: /usr/share/applications/lxterminal.desktop
+        dest: /home/{{ user }}/.config/autostart
+        remote_src: yes
+
+    - name: configure startup terminal
+      file:
+        path: /home/{{ user }}/.config/clipit
+        state: directory
+
+    - name: Copy clipitrc config file
+      copy:
+        src: clipitrc
+        dest: /home/{{ user }}/.config/clipit/clipitrc
+  become: yes
+  become_user: "{{ user }}"
+
+# Setup desktop background colour
+- block:
+    - name: create LXDE directory
+      file:
+        path: /home/{{ user }}/.config/pcmanfm/LXDE
+        state: directory
+    - name: Copy LXDE config file
+      copy:
+        src: lxdedeskconf
+        dest: /home/{{ user }}/.config/pcmanfm/LXDE/desktop-items-0.conf
+  become: yes
+  become_user: "{{ user }}"

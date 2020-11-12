@@ -1,0 +1,109 @@
+# Prepare the base os
+
+# Get latest package info and install updates
+
+- name: get updates, long running process (~5mins)
+  apt:
+    update_cache: yes
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+
+- name: Install dos2unix in case any files have Windows EOL characters
+  apt:
+    name: dos2unix
+
+- name: install git
+  apt:
+    name: git
+
+#### Install the LXDE desktop
+- name: Install packages
+  apt:
+    pkg:
+    - lxde
+    - xinput
+
+# Install x2go virtual desktop server
+- block:
+    - name: Install software-properties-common
+      apt:
+        name: software-properties-common
+
+    - name: add x2go to apt repo
+      apt_repository:
+        repo: ppa:x2go/stable
+        update_cache: yes
+
+    - name: install x2goserver
+      apt:
+        pkg:
+        - x2goserver
+        - x2goserver-xsession
+  when: not local
+
+# Install X11 to allow -X connections
+- block:
+    - name: Install Xorg
+      apt:
+        pkg:
+          - xorg
+          - openbox
+          - xauth
+
+    - name: Enabling X11 Forwarding  
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^X11Forwarding'
+        line: 'X11Forwarding yes'
+      notify: Restart ssh
+
+    - name: Disable X11 localhost  
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: '^X11UseLocalhost'
+        line: 'X11UseLocalhost no'
+      notify: Restart ssh
+
+- name: Remove extra packages
+  apt:
+    state: absent
+    autoremove: yes
+    pkg:
+    - gnome-screensaver
+    - lxlock
+    - light-locker
+    - network-manager-gnome
+    - gnome-online-accounts
+
+
+- name: Install language pack
+  apt:
+    name: language-pack-en
+
+
+- name: set language
+  command: update-locale LANG=en_GB.utf8
+
+- name: Set UK keyboard
+  command: perl -pi -e 's/XKBLAYOUT="us"/XKBLAYOUT="gb"/;' /etc/default/keyboard
+
+
+# define users
+- name: create admin user
+  include: users.yml user={{ admin_username }} user_password={{ admin_password }} user_groups="sudo,netdev"
+
+- name: create vagrant user
+  include: users.yml user={{ vagrant }} user_password={{ vagrant }} user_groups="netdev"
+
+- name: Loop over and create users
+  include: users.yml user={{ item.value.username }} user_password={{ item.value.password }} user_groups="netdev"
+  with_dict: "{{ vmhosts }}"
+
+
+- name: add a list of hosts to /etc/hosts
+  become: yes
+  lineinfile:
+    dest: /etc/hosts
+    line: "{{ item.value.ip }} {{ item.key }}"
+    state: present
+  with_dict: "{{ vmhosts }}"

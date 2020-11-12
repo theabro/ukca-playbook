@@ -26,6 +26,13 @@
     state: link
     force: yes
 
+- name: symlink umdir to user
+  file:
+    src: /umshared/umdir
+    dest: /home/{{ username }}/umdir
+    state: link
+    force: yes
+
 - name: Make HOME/etc folder
   file:
     path: /home/{{ vagrant }}/etc

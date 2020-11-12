@@ -5,6 +5,21 @@ vagrant: vagrant
 admin_username: admin
 admin_password: SomeAdminPassword
 
+vmhosts:
+  ukca-vm01:
+    ip: 192.168.3.3
+    username: ukcatr01
+    password: ukcaPass01
+#  ukca-vm02:
+#    ip: 192.168.3.X
+#    username: ukcatr02
+#    password: ukcaPass02
+#  ukca-vm03:
+#    ip: 192.168.3.X
+#    username: ukcatr03
+#    password: ukcaPass03
+      
+
 
 # If running on local vagrant vm, set local: true
 local: false
