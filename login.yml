@@ -14,11 +14,12 @@
 
 
   roles:
-  # configure the VM and download the metomi-vm files from github
+  # configure the VM and configure user access
     - create-users
     #- remove-root-access
 
 
+# equivalent to: sudo systemctl restart ssh
   handlers:
   - name: Restart ssh
     service: name=ssh state=restarted

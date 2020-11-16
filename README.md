@@ -18,7 +18,7 @@ Preparing the playbook
 There are two files which have the postfix _template*. Just copy these files into their current location removing `_template`.
 
 1. metomi-playbook/inventory_template.ini
-2. metomi-playbook/group_vars/all_template.yml
+2. metomi-playbook/group\_vars/all\_template.yml
 
 Then setup the files as below.
 
@@ -171,3 +171,6 @@ the contents of the shared drive to allow the NFS mount to work correctly.
 TODO: 	 move to ext4 for volume
 	 work on nfs mount
 
+Student running - may need to run this command first for each VM, e.g., or find another way to add it to the known_hosts file
+
+    ssh -Y -A -o ProxyCommand="ssh -W %h:%p -A -q root@192.171.139.44" root@192.168.3.7

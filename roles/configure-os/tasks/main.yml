@@ -32,7 +32,7 @@
 
 - name: create ssh key directory
   file:
-    path: ssh_keys/{{ inventory_hostname }}
+    path: ssh_keys
     state: directory
   delegate_to: 127.0.0.1
   become: no

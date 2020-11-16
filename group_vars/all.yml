@@ -1,5 +1,8 @@
 ---
 
+# internal IP of NFS machine - could change with each deployment
+nfs_internal_ip: 192.168.3.13
+
 vagrant: vagrant
 
 admin_username: admin
@@ -7,18 +10,13 @@ admin_password: SomeAdminPassword
 
 vmhosts:
   ukca-vm01:
-    ip: 192.168.3.3
+    ip: 192.168.3.26
     username: ukcatr01
     password: ukcaPass01
-#  ukca-vm02:
-#    ip: 192.168.3.X
-#    username: ukcatr02
-#    password: ukcaPass02
-#  ukca-vm03:
-#    ip: 192.168.3.X
-#    username: ukcatr03
-#    password: ukcaPass03
-      
+  ukca-vm02:
+    ip: 192.168.3.7
+    username: ukcatr02
+    password: ukcaPass02
 
 
 # If running on local vagrant vm, set local: true
@@ -32,8 +30,6 @@ ROSE_VERSION: 2019.01.3
 
 # GRIB API - mutually exclusive:
 # UMvn11.2+:            libeccodes-dev
-# UMvn11.1 and earlier: libgrib-api-dev
 grib_library: libeccodes-dev
-
-# internal IP of NFS machine - could change with each deployment
-nfs_internal_ip: 192.168.3.13
+# UMvn11.1 and earlier: libgrib-api-dev
+#grib_library: libgrib-api-dev
