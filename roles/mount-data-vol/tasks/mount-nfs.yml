@@ -80,5 +80,19 @@
     state: link
     force: yes
 
+- name: symlink Tutorial
+  file:
+    src: /umshared/Tutorial
+    dest: /home/{{ vagrant }}/Tutorial
+    state: link
+    force: yes
+
+- name: symlink Tutorial to user
+  file:
+    src: /umshared/Tutorial
+    dest: /home/{{ username }}/Tutorial
+    state: link
+    force: yes
+
 
 

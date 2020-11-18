@@ -42,7 +42,8 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK UMDIR"
 
 
-# Install Iris from miniconda
+# Install Iris from miniconda - need particular versions of packages
+# to get tutorial scripts to work correctly
 - block: 
     - name: create Downloads directory
       file:
@@ -58,7 +59,7 @@
       args:
         executable: /bin/bash
     - name: Install via conda
-      shell: PATH=~/miniconda3/bin:$PATH conda install -y -c conda-forge iris ipython
+      shell: PATH=~/miniconda3/bin:$PATH conda install -y -c conda-forge python=3.6 iris=1.13 ipython mo_pack numpy=1.15
       args:
         executable: /bin/bash
     - name: Update .bashrc with python specifics

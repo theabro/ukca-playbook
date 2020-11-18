@@ -19,7 +19,7 @@
       filesystem: fstype=ext4 dev=/dev/sdb1
 
     - name: set mountpoints
-      mount: path=/share src=/dev/sdb1 fstype=ext4 opts=ro state=mounted
+      mount: path=/share src=/dev/sdb1 fstype=ext4 opts=rw,sync state=mounted
 
     - name: Create nfs4 mountable dir
       file: path=/srv/nfs4/umshared state=directory mode=777 owner=root group=root
