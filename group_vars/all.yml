@@ -1,7 +1,7 @@
 ---
 
 # internal IP of NFS machine - could change with each deployment
-nfs_internal_ip: 192.168.3.7
+nfs_internal_ip: 192.168.3.31
 
 vagrant: vagrant
 
@@ -10,9 +10,21 @@ admin_password: SomeAdminPassword
 
 vmhosts:
   ukca-vm01:
-    ip: 192.168.3.9
+    ip: 192.168.3.10
     username: ukcatr01
     password: ukcaPass01
+  ukca-vm02:
+    ip: 192.168.3.8
+    username: ukcatr02
+    password: ukcaPass02
+  ukca-vm03:
+    ip: 192.168.3.21
+    username: ukcatr03
+    password: ukcaPass03
+  ukca-vm04:
+    ip: 192.168.3.11
+    username: ukcatr04
+    password: ukcaPass04
 
 # If running on local vagrant vm, set local: true
 local: false

@@ -1,1 +1,1 @@
-ansible_ssh_common_args: '-o ProxyCommand="ssh -W %h:%p -A -q root@192.171.139.44"'
+ansible_ssh_common_args: '-o StrictHostKeyChecking=accept-new -o ProxyCommand="ssh -W %h:%p -A -q root@192.171.139.44"'
