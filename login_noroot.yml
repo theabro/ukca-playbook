@@ -14,8 +14,8 @@
 
 
   roles:
-  # configure the VM and configure user access
-    - create-users
+  # remove root SSH access once all VMs built
+    - remove-root-access
 
 
 # equivalent to: sudo systemctl restart ssh
