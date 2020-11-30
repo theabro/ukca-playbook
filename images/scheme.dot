@@ -1,0 +1,9 @@
+graph ukca {
+    graph [fontname = "arial", dpi = 300];
+    node [fontname = "arial"];
+    edge [fontname = "arial"];
+    "Login Server" -- "Student VM #1" -- "NFS Server";
+    "Login Server" -- "Student VM #2" -- "NFS Server";
+    "Login Server" -- "Student VM #3" -- "NFS Server";
+    "Login Server" -- "Student VM #4" -- "NFS Server";
+}
