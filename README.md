@@ -7,8 +7,8 @@ Ansible Playbooks for UKCA training based on the Met Office Virtual Machine
 _With thanks to Richard Smith and Matt Prior_
 
 
-This playbook is used to provision a VM on the Jasmin scientific computing cloud.
-The playbook deploys a machine and installs x2go server on the VM allowing the user to use applications requiring x windows.
+This playbook is used to provision a VM on the JASMIN Unmanaged Cloud.
+The playbook deploys a machine and installs X2Go server on the VM allowing the user to use applications requiring X windows.
 [x2goclient](http://wiki.x2go.org/doku.php/download:start) will need to be installed on the local machine.
 
 When the system is completed, the system of VMs will look like
