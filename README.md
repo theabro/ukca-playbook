@@ -9,14 +9,16 @@ _With thanks to Richard Smith and Matt Prior_
 
 This playbook is used to provision a VM on the JASMIN Unmanaged Cloud.
 The playbook deploys a machine and installs X2Go server on the VM allowing the user to use applications requiring X windows. The
-[x2goclient](http://wiki.x2go.org/doku.php/download:start) will need to be installed on the local machine.
+[x2goclient](http://wiki.x2go.org/doku.php/download:start) will need to be installed on the local machine. It is based on original scripts written by Richard Smith.
 
 When the system is completed, the system of VMs will look like
 
 ![Diagram showing VM connections on the JASMIN Unmanaged Cloud](images/scheme.png?raw=true "VM layout on the JASMIN UMC")
 
+with as many Student VMs provisioned as required.
+
 Process
-----------------------
+----
 
 There are 5 steps that must be performed to use these playbooks to provision a working system:
 
@@ -24,12 +26,14 @@ There are 5 steps that must be performed to use these playbooks to provision a w
 2. Mount this volume on a new VM and use this as an NFS server, using the `nfs.yml` playbook.
 3. Make the login server using the `login.yml` playbook.
 4. Make the students VMs via the `student.yml` playbook. These are provisioned concurrently through the login server, and they each will mount the volume via the NFS server.
-5. Remove root access to the login server using the `login_noroot.yml` playbook.
+5. Remove root access to the login server using the `login_noroot.yml` playbook (optional, or can be done manually).
 
 While the _main_ VM will have a username of **vagrant**, each of the student VMs can have different usernames. The machines will also have a _vagrant_ user as the UM requires this when working on the VM, but each user can have their own username.
 
+## Step 1 - Installing the UM
+
 Before running the playbook against a cloud machine (main.yml)
----------------------------------------------------
+----
 
 Using [cloud.jasmin.ac.uk](https://cloud.jasmin.ac.uk) to preapre machine on jasmin for the playbook.
 
@@ -53,27 +57,27 @@ Using [cloud.jasmin.ac.uk](https://cloud.jasmin.ac.uk) to preapre machine on jas
 
 You may need to wait a few minutes before you will be able to access the VM over the internet once it's booted-up.
 
-Running the playbook
---------------------
+Running the playbook on the JASMIN unmanaged cloud
+----
 
-Running the playbook on unmanaged cloud
-=======================================
-
-
-The playbook is run using the following command from inside the repository::
-
-    ansible-playbook main.yml -i inventory.ini
 
 On macOS you may first need to
 
     export PATH="/Users/[YOUR USERNAME]/Library/Python/2.7/bin:$PATH"
 
-The playbook creates an ssh key and places it inside a folder called ssh-keys inside a folder labelled by the hostname.
+The playbook is run using the following command from inside the repository::
+
+    ansible-playbook main.yml -i main_inventory.ini
+
+The playbook creates an ssh key and places it inside a folder called `ssh-keys`, named for the user. It will take around 20-30 minutes to provision this VM.
+
 The public key is uploaded and added to the accepted ssh keys on the remote machine but it is up to the user to add the key
 to their local environment.
 
+To connect to the VM you can either use ssh over a terminal or MobaXTerm. For a graphical connection (recommended), you can use X2Go.
+
 Using x2goclient
-----------------
+----
 
 Before you can connect to the VM you may need to install X2Go client.
 
@@ -84,6 +88,8 @@ Before you can connect to the VM you may need to install X2Go client.
 2. Click on your new session on the right hand side of the x2goclient window.
 
 3. It should automatically login, asking if you wish to allow connection on first run.
+
+The advantage of using X2Go rather than a Terminal is that you can close the connection winow and re-open it later, leaving all your processes running as you left them.
 
 
 **Settings**
@@ -99,26 +105,68 @@ Before you can connect to the VM you may need to install X2Go client.
     Session type: LXDE
 
 UM Install Commands
--------------------
+----
 
-**UKCA Tutorials at vn11.8**
+**Note** that prior to UMvn11.1 the UM install won't work due to the `gfortran` compiler version used at Ubuntu 18.04.
 
-The UKCA Tutorials at vn11.8 need some specific settings, particularly setting `grib_library: libgrib-api-dev` in `group_vars/all.yml`. The current roles will perform the equivalent to `sudo install-um-extras`, but following that you will need to run the following commands in sequence:
+**UKCA Tutorials at e.g. vn11.8**
+
+The UKCA Tutorials at vn11.8 need some specific settings, particularly setting 
+
+	grib_library: libgrib-api-dev 
+
+in `group_vars/all.yml`. The current roles will perform the equivalent to `sudo install-um-extras`, but following that you will need to run the following commands in sequence:
 
     um-setup -s fcm:shumlib.x_tr@um11.8
     install-um-data
     install-ukca-data
     install-rose-meta
     cd src
-    fcm checkout fcm:um.x_tr@vn11.7 UM11.8
+    fcm checkout fcm:um.x_tr@vn11.8 UM11.8
     cd UM11.8
     rose stem --group=install,install_source -S CENTRAL_INSTALL=true -S UKCA=true
     rose stem --group=kgo,ukca -S GENERATE_KGO=true
     rose stem --group=fcm_make --name=vn11.8_prebuilds -S MAKE_PREBUILDS=true
     rose stem -O offline --group=fcm_make --name=vn11.8_offline_prebuilds -S MAKE_PREBUILDS=true
 
+After the `um-setup` command you will need to close and re-open a terminal.
+
 You may need to
 
     sudo chown nobody:nogroup -R .
 
 the contents of the shared drive to allow the NFS mount to work correctly.
+
+If you are using a `j4.medium` or higher you could use `-S LIMIT=2` with the rose-stem commands.
+
+Creating the Tutorials
+----
+
+This is essentially a copy of what is described in the [current Tutorials](https://www.ukca.ac.uk/wiki/index.php/UKCA_Training_Overview) or [Abraham _et al._ (2018)](https://doi.org/10.5194/gmd-11-3647-2018) but at the version required (e.g. UMvn11.8). 
+
+The material will need to be re-generated and the instructions determined by following the Tutorials at the new version. The UMvn10.9 output can be found at 
+
+* [http://gws-access.jasmin.ac.uk/public/ukca/UKCA\_Tutorial\_vn109.tgz](http://gws-access.jasmin.ac.uk/public/ukca/UKCA_Tutorial_vn109.tgz)
+
+and the scripts used are contained in their own repository at
+
+* [https://github.com/theabro/ukca](https://github.com/theabro/ukca)
+
+Note that the `/umshared` directory on the separate volume contains the following directories:
+
+    cylc-run
+    doc
+    etc
+    source
+    src
+    umdir
+
+and these are linked to `/home/vagrant`:
+
+	cylc-run -> /umshared/cylc-run
+	doc -> /umshared/doc
+	source -> /umshared/source
+	src -> /umshared/src
+	umdir -> /umshared/umdir
+	
+These directories are then symlinked on each of the student VMs.	
