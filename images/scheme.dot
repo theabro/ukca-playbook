@@ -6,4 +6,5 @@ graph ukca {
     "Login Server" -- "Student VM #2" -- "NFS Server";
     "Login Server" -- "Student VM #3" -- "NFS Server";
     "Login Server" -- "Student VM #4" -- "NFS Server";
+    "NFS Server" -- "Volume with UM installation";
 }
