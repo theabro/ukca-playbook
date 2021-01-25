@@ -144,9 +144,9 @@ Creating the Tutorials
 
 This is essentially a copy of what is described in the [current Tutorials](https://www.ukca.ac.uk/wiki/index.php/UKCA_Training_Overview) or [Abraham _et al._ (2018)](https://doi.org/10.5194/gmd-11-3647-2018) but at the version required (e.g. UMvn11.8). 
 
-The material will need to be re-generated and the instructions determined by following the Tutorials at the new version. The UMvn10.9 output can be found at 
+The material will need to be re-generated and the instructions determined by following the Tutorials at the new version. The UMvn11.8 output can be found at 
 
-* [http://gws-access.jasmin.ac.uk/public/ukca/UKCA\_Tutorial\_vn109.tgz](http://gws-access.jasmin.ac.uk/public/ukca/UKCA_Tutorial_vn109.tgz)
+* [http://gws-access.jasmin.ac.uk/public/ukca/UKCA\_Tutorial\_vn118.tgz](http://gws-access.jasmin.ac.uk/public/ukca/UKCA_Tutorial_vn118.tgz)
 
 and the scripts used are contained in their own repository at
 
@@ -159,6 +159,7 @@ Note that the `/umshared` directory on the separate volume contains the followin
     etc
     source
     src
+    Tutorials
     umdir
 
 and these are linked to `/home/vagrant`:
@@ -167,6 +168,27 @@ and these are linked to `/home/vagrant`:
 	doc -> /umshared/doc
 	source -> /umshared/source
 	src -> /umshared/src
+	Tutorials -> /umshared/Tutorials
 	umdir -> /umshared/umdir
 	
 These directories are then symlinked on each of the student VMs.	
+Relevant UMDPs and other documentation can be placed in the `doc/` directory.
+
+## Step 2 - creating the NFS server
+
+The NFS server is rather simple. On the JASMIN cloud portal you should shutdown the original UM VM, disconnect the volume, and detach the external IP. You then need to make a new VM, which doesn't need to be large, e.g. a `j3.small` (2x cpu, 4GB memory) or perhaps the slightly larger `j4.small` (2x cpu, 8GB memory). Then you need to assign your external IP address to this machine and then attach the volume.
+
+_You will need to make a note of the **internal IP address** of this machine._ This IP address is needed later as the mount point.
+
+You will need to edit your `~/.ssh/known_hosts` to delete the existing entries for the external IP. Once you have done that you can run the command
+
+	ansible-playbook -v nfs.yml -i nfs_inventory.ini 
+	
+This will then install the required NFS software on the VM and allow the volume to be mounted by the student VMs. 
+
+You may be asked if you want to continue connecting, if so, type `yes`.
+
+## Step 3 - creating the login server
+
+## Step 4 - creating the Student VMs
+

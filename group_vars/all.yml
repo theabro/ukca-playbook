@@ -1,7 +1,7 @@
 ---
 
 # internal IP of NFS machine - could change with each deployment
-nfs_internal_ip: 192.168.3.31
+nfs_internal_ip: 192.168.3.22
 
 vagrant: vagrant
 
@@ -10,21 +10,81 @@ admin_password: SomeAdminPassword
 
 vmhosts:
   ukca-vm01:
-    ip: 192.168.3.10
+    ip: 192.168.3.3
     username: ukcatr01
     password: ukcaPass01
   ukca-vm02:
-    ip: 192.168.3.8
+    ip: 192.168.3.11
     username: ukcatr02
     password: ukcaPass02
   ukca-vm03:
-    ip: 192.168.3.21
+    ip: 192.168.3.23
     username: ukcatr03
     password: ukcaPass03
   ukca-vm04:
-    ip: 192.168.3.11
+    ip: 192.168.3.5
     username: ukcatr04
     password: ukcaPass04
+  ukca-vm05:
+    ip: 192.168.3.6 
+    username: ukcatr05
+    password: ukcaPass05
+  ukca-vm06:
+    ip: 192.168.3.7
+    username: ukcatr06
+    password: ukcaPass06
+  ukca-vm07:
+    ip: 192.168.3.9
+    username: ukcatr07
+    password: ukcaPass07
+  ukca-vm08:
+    ip: 192.168.3.15
+    username: ukcatr08
+    password: ukcaPass08
+  ukca-vm09:
+    ip: 192.168.3.25
+    username: ukcatr09
+    password: ukcaPass09
+  ukca-vm10:
+    ip: 192.168.3.18
+    username: ukcatr10
+    password: ukcaPass10
+  ukca-vm11:
+    ip: 192.168.3.13
+    username: ukcatr11
+    password: ukcaPass11
+  ukca-vm12:
+    ip: 192.168.3.26
+    username: ukcatr12
+    password: ukcaPass12
+  ukca-vm13:
+    ip: 192.168.3.29
+    username: ukcatr13
+    password: ukcaPass13
+  ukca-vm14:
+    ip: 192.168.3.30
+    username: ukcatr14
+    password: ukcaPass14
+  ukca-vm15:
+    ip: 192.168.3.12
+    username: ukcatr15
+    password: ukcaPass15
+  ukca-vm16:
+    ip: 192.168.3.19
+    username: ukcatr16
+    password: ukcaPass16
+  ukca-vm17:
+    ip: 192.168.3.41
+    username: ukcatr17
+    password: ukcaPass17
+  ukca-vm18:
+    ip: 192.168.3.20
+    username: ukcatr18
+    password: ukcaPass18
+  ukca-vm19:
+    ip: 192.168.3.8
+    username: ukcatr19
+    password: ukcaPass19
 
 # If running on local vagrant vm, set local: true
 local: false
