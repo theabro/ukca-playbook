@@ -46,7 +46,7 @@ Using [cloud.jasmin.ac.uk](https://cloud.jasmin.ac.uk) to preapre machine on jas
 
 5.  Select the **Ubuntu-18.04** template (e.g. `ubuntu-1804-20200506`)
 
-6. Select the size you need. The minimum size for a UM-capabil VM is **j4.small** (2 cpus, 8192MB of RAM), but a larger machine would allow you to install the KGO faster as you could run multiple tasks at once.
+6. Select the size you need. The minimum size for a UM-capable VM for running UKCA is **j4.small** (2 cpus, 8192MB of RAM), but a larger machine would allow you to install the KGO faster as you could run multiple tasks at once.
 
 7.  Click **Create machine**
 
@@ -140,7 +140,7 @@ Creating the Tutorials
 
 This is essentially a copy of what is described in the [current Tutorials](https://www.ukca.ac.uk/wiki/index.php/UKCA_Training_Overview) or [Abraham _et al._ (2018)](https://doi.org/10.5194/gmd-11-3647-2018) but at the version required (e.g. UMvn11.8). The UMvn11.8 tutorials can be found at
 
-* [https://www.ukca.ac.uk/wiki/index.php/UKCA_Chemistry_and_Aerosol_Tutorials_at_vn11.8](https://www.ukca.ac.uk/wiki/index.php/UKCA_Chemistry_and_Aerosol_Tutorials_at_vn11.8)
+* [https://www.ukca.ac.uk/wiki/index.php/UKCA\_Chemistry\_and\_Aerosol\_Tutorials\_at\_vn11.8](https://www.ukca.ac.uk/wiki/index.php/UKCA_Chemistry_and_Aerosol_Tutorials_at_vn11.8)
 
 and were created on a VM on the JASMIN Unmanaged Cloud using this playbook.
 
@@ -231,14 +231,14 @@ You should create all the Student VMs via the [JASMIN Cloud Portal](https://clou
 	    username: ukcatr02
 	    password: ukcaPass02
 
-etc. Multiple machines can be configured at once. Up to 19 have been used so far.
+etc. Multiple machines can be configured at once. Up to 19 concurrent VMs have been used so far.
 
 In order to complete the next step, SSH root access has not yet been disabled. 
 
 X2Go Settings
 ===
 
-When using
+When using X2Go now, to connect you must specify the login host as the proxy server. 
 
 | Option | Setting |
 | :--- | :--- |
@@ -253,6 +253,22 @@ When using
 | Proxy server – RSA/DSA key | *The path to your* id\_rsa\_ukcatrXX *key file (navigate via button)* |
 | Session type | *Select* LXDE *from drop-down menu* |
 
+It's also possible to connect via a Terminal using GNU/Linux or macOS (with XQuartz) using the command
+
+	ssh -Y -o ProxyCommand="ssh -W %h:%p -q -i /path/to/id_rsa_ukcatrXX ukcatrXX@192.171.139.44" -i /path/to/id_rsa_ukcatrXX ukcatrXX@ukca-vmXX
+	
+or by editing your `.ssh/config` file to add the following
+
+	Host ukca-vmXX
+       Hostname ukca-vmXX
+       User ukcatrXX
+       IdentityFile /path/to/id_rsa_ukcatrXX
+       ProxyCommand ssh -W %h:%p -q -i /path/to/id_rsa_ukcatrXX ukcatrXX@192.171.139.44
+
+this will then allow you to connect using `ssh -Y ukca-vmXX`.
+
+Further details on how to connect can be found on the [UKCA wiki](https://www.ukca.ac.uk/wiki/index.php/UKCA_Chemistry_and_Aerosol_Tutorials:_Configuring_X2Go).
+      
 
 ## Step 5 - remove root SSH access
 
