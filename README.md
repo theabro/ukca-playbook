@@ -4,7 +4,7 @@ Ansible Playbooks for UKCA training based on the [Met Office Virtual Machine](ht
 
 **N. Luke Abraham, November 2020, National Centre for Atmospheric Science**
 
-_With thanks to Richard Smith and Matt Prior, Centre for Environmental Data Archival_
+_With thanks to Richard Smith and Matt Pryor, Centre for Environmental Data Archival_
 
 
 This playbook is used to provision a VM on the JASMIN Unmanaged Cloud.
