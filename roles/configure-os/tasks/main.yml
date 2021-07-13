@@ -8,6 +8,12 @@
   environment:
     DEBIAN_FRONTEND: noninteractive
 
+- name: upgrade packages, long running process (~5mins)
+  apt:
+    upgrade: yes
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+
 - name: Install dos2unix in case any files have Windows EOL characters
   apt:
     name: dos2unix
