@@ -77,6 +77,8 @@
     force: yes
   register: git_deploy
   until: git_deploy is success
+  become: yes
+  become_user: "{{ username }}"
 
 # Extend root volume using lvm to include a new physical disk
 #- include: create-data-vol.yml

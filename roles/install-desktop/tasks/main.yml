@@ -21,6 +21,7 @@
         pkg:
         - x2goserver
         - x2goserver-xsession
+        - x2golxdebindings
   when: not local
 
 # Install X11 to allow -X connections
@@ -32,14 +33,14 @@
           - openbox
           - xauth
 
-    - name: Enabling X11 Forwarding  
+    - name: Enabling X11 Forwarding
       lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: '^X11Forwarding'
         line: 'X11Forwarding yes'
       notify: Restart ssh
 
-    - name: Disable X11 localhost  
+    - name: Disable X11 localhost
       lineinfile:
         dest: /etc/ssh/sshd_config
         regexp: '^X11UseLocalhost'
@@ -76,6 +77,8 @@
     path: /home/{{ username }}/Desktop
     state: directory
     owner: "{{ username }}"
+  become: yes
+  become_user: "{{ username }}"
 
 - name: Add terminal shortcut to desktop
   copy:
@@ -83,6 +86,8 @@
     dest: /home/{{ username }}/Desktop
     remote_src: yes
     owner: "{{ username }}"
+  become: yes
+  become_user: "{{ username }}"
 
 - name: Enable autologin (1/2)
   copy:
@@ -100,6 +105,8 @@
 
 # Docs shortcut
 - command: dos2unix -n /home/{{ vagrant }}/metomi-vms/home/Desktop/docs.desktop /home/{{ username }}/Desktop/docs.desktop
+  become: yes
+  become_user: "{{ username }}"
 
 # Open terminal on startup
 - block:
