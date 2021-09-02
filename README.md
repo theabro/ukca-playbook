@@ -16,6 +16,8 @@ When the system is completed, the system of VMs and volumes will look like
 
 with as many Student VMs provisioned as required.
 
+A presentation describing the set-up and use of this system was presented at the [JASMIN User Seminar Series](https://youtu.be/gAT9HIUJ1U0).
+
 Process
 ===
 
